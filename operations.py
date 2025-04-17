@@ -78,3 +78,25 @@ def low_stock_alert(threshold=5):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+def delete_medicine(med_id):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM medicines WHERE id = ?", (med_id,))
+    conn.commit()
+    conn.close()
+
+def modify_quantity(med_id, new_quantity):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE medicines SET quantity = ? WHERE id = ?", (new_quantity, med_id))
+    conn.commit()
+    conn.close()
+
+def low_stock_alert(threshold=5):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM medicines WHERE quantity <= ? ORDER BY id DESC", (threshold,))
+    rows = cursor.fetchall()
+    conn.close()
+    return rows

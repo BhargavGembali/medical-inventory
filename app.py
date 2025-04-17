@@ -82,6 +82,77 @@ def show_low_stock():
     else:
         messagebox.showinfo("All Good", "No low stock items!")
 
+def delete_medicine_popup():
+    popup = tk.Toplevel(root)
+    popup.title("Delete Medicine")
+    popup.geometry("250x150")
+
+    tk.Label(popup, text="Enter Medicine ID to delete").pack(pady=5)
+    id_entry = tk.Entry(popup)
+    id_entry.pack()
+
+    def delete():
+        try:
+            med_id = int(id_entry.get())
+            delete_medicine(med_id)
+            popup.destroy()
+            refresh_inventory()
+            messagebox.showinfo("Deleted", "Medicine deleted.")
+        except:
+            messagebox.showerror("Error", "Invalid ID!")
+
+    tk.Button(popup, text="Delete", command=delete).pack(pady=10)
+
+
+def modify_quantity_popup():
+    popup = tk.Toplevel(root)
+    popup.title("Modify Quantity")
+    popup.geometry("250x200")
+
+    tk.Label(popup, text="Medicine ID").pack()
+    id_entry = tk.Entry(popup)
+    id_entry.pack()
+
+    tk.Label(popup, text="New Quantity").pack()
+    qty_entry = tk.Entry(popup)
+    qty_entry.pack()
+
+    def modify():
+        try:
+            med_id = int(id_entry.get())
+            qty = int(qty_entry.get())
+            modify_quantity(med_id, qty)
+            popup.destroy()
+            refresh_inventory()
+            messagebox.showinfo("Updated", "Quantity updated.")
+        except:
+            messagebox.showerror("Error", "Invalid input!")
+
+    tk.Button(popup, text="Update", command=modify).pack(pady=10)
+
+
+def show_low_stock():
+    low_stock = low_stock_alert()
+    if not low_stock:
+        messagebox.showinfo("All Good", "No low stock items!")
+        return
+
+    popup = tk.Toplevel(root)
+    popup.title("Low Stock Items")
+    popup.geometry("600x300")
+
+    cols = ("ID", "Name", "Category", "Quantity", "Price", "Expiry")
+    stock_tree = ttk.Treeview(popup, columns=cols, show='headings')
+    for col in cols:
+        stock_tree.heading(col, text=col)
+        stock_tree.column(col, width=100)
+    stock_tree.pack(fill="both", expand=True)
+
+    for row in low_stock:
+        stock_tree.insert('', tk.END, values=row)
+
+
+
 # --------- Treeview (Inventory Table) ---------
 
 columns = ("ID", "Name", "Category", "Quantity", "Price", "Expiry")
@@ -101,6 +172,9 @@ tk.Button(btn_frame, text="Add Medicine", width=15, command=add_medicine_popup).
 tk.Button(btn_frame, text="Sell Medicine", width=15, command=sell_medicine_popup).grid(row=0, column=1, padx=10)
 tk.Button(btn_frame, text="Low Stock Alert", width=15, command=show_low_stock).grid(row=0, column=2, padx=10)
 tk.Button(btn_frame, text="Refresh", width=15, command=refresh_inventory).grid(row=0, column=3, padx=10)
+tk.Button(btn_frame, text="Delete Medicine", width=15, command=delete_medicine_popup).grid(row=1, column=0, padx=10, pady=5)
+tk.Button(btn_frame, text="Modify Quantity", width=15, command=modify_quantity_popup).grid(row=1, column=1, padx=10, pady=5)
+
 
 refresh_inventory()
 root.mainloop()
