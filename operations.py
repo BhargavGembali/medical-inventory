@@ -100,3 +100,16 @@ def low_stock_alert(threshold=5):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+def view_sales():
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT sales.id, medicines.name, sales.quantity_sold, sales.sale_date 
+        FROM sales 
+        JOIN medicines ON sales.medicine_id = medicines.id 
+        ORDER BY sales.sale_date DESC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return rows

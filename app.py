@@ -152,6 +152,28 @@ def show_low_stock():
         stock_tree.insert('', tk.END, values=row)
 
 
+def show_sales():
+    sales = view_sales()
+    if not sales:
+        messagebox.showinfo("No Sales", "No sales recorded yet!")
+        return
+
+    popup = tk.Toplevel(root)
+    popup.title("Sales Records")
+    popup.geometry("600x300")
+
+    cols = ("Sale ID", "Medicine Name", "Quantity Sold", "Sale Date")
+    sales_tree = ttk.Treeview(popup, columns=cols, show='headings')
+    for col in cols:
+        sales_tree.heading(col, text=col)
+        sales_tree.column(col, width=150)
+    sales_tree.pack(fill="both", expand=True)
+
+    for row in sales:
+        sales_tree.insert('', tk.END, values=row)
+
+
+
 
 # --------- Treeview (Inventory Table) ---------
 
@@ -174,6 +196,7 @@ tk.Button(btn_frame, text="Low Stock Alert", width=15, command=show_low_stock).g
 tk.Button(btn_frame, text="Refresh", width=15, command=refresh_inventory).grid(row=0, column=3, padx=10)
 tk.Button(btn_frame, text="Delete Medicine", width=15, command=delete_medicine_popup).grid(row=1, column=0, padx=10, pady=5)
 tk.Button(btn_frame, text="Modify Quantity", width=15, command=modify_quantity_popup).grid(row=1, column=1, padx=10, pady=5)
+tk.Button(btn_frame, text="📊 View Sales", width=15, command=show_sales).grid(row=1, column=2, padx=10, pady=5)
 
 
 refresh_inventory()
